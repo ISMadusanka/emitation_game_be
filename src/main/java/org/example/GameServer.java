@@ -24,7 +24,7 @@ public class GameServer {
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             serverUI= new ServerUI();
-            serverUI.log("Server Starting...");
+            serverUI.log("Server started!");
             System.out.println("Server started!");
             System.out.println("Players should connect to one of these IPs:");
 
