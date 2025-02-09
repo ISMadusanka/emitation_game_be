@@ -93,6 +93,7 @@ public class ClientUI extends JFrame {
 
     public void showRole(Role role) {
         gameArea.append("You are: " + role + "\n");
+
     }
 
     public static void main(String[] args) {
