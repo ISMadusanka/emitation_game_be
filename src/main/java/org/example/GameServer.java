@@ -2,24 +2,29 @@ package org.example;
 
 import org.example.enums.Role;
 import org.example.enums.TaskType;
+import org.example.ui.ServerUI;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 public class GameServer {
     private static final int PORT = 12345;
-    private static final int MAX_PLAYERS = 3;
+    private static final int MAX_PLAYERS = 2;
     public static BlockingQueue<Pair<PlayerHandler, Response>> queue = new LinkedBlockingQueue<>();
     private final List<PlayerHandler> players = new ArrayList<>();
     private int currentJudgeIndex = 0;
     private int round = 0;
+    private ServerUI serverUI;
 
     // In GameServer class, modify the start() method:
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            serverUI= new ServerUI();
+            serverUI.log("Server Starting...");
             System.out.println("Server started!");
             System.out.println("Players should connect to one of these IPs:");
 
@@ -50,6 +55,10 @@ public class GameServer {
                 players.add(player);
                 player.start();
                 System.out.println("Player " + player.getIdd() + " connected");
+                serverUI.updatePlayerList(players.stream()
+                        .map(p -> "Player " + p.getIdd())
+                        .collect(Collectors.toList()));
+                serverUI.log("Player " + player.getIdd() + " connected");
             }
 
             startGame();
