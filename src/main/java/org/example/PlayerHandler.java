@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.enums.Role;
+import org.example.ui.ClientUI;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,11 +16,14 @@ public class PlayerHandler extends Thread {
     private int score = 0;
     private Role role;
 
+    private ClientUI clientUI;
+
     public PlayerHandler(Socket socket, int id) throws IOException {
         this.socket = socket;
         this.id = id;
         output = new ObjectOutputStream(socket.getOutputStream());
         input = new ObjectInputStream(socket.getInputStream());
+        clientUI = new ClientUI();
     }
 
     public void run() {
@@ -48,7 +52,10 @@ public class PlayerHandler extends Thread {
     public int getScore() { return score; }
     public void addScore(int points) { score += points; }
     public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
+    public void setRole(Role role) {
+        this.role = role;
+        clientUI.showRole(role);
+    }
 
     public void close() throws IOException {
         input.close();
