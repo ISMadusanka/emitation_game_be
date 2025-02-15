@@ -47,6 +47,8 @@ public class GameClient {
         SwingUtilities.invokeLater(() -> {
             if (task.getType() == TaskType.UPDATE_SCORE) {
                 ui.updateScore((Integer) task.getData());
+            } else if (task.getType() == TaskType.GAME_OVER) {
+                ui.showGameOver((String) task.getData());
             } else {
                 ui.handleTask(task);
             }
@@ -61,6 +63,8 @@ public class GameClient {
             e.printStackTrace();
         }
     }
+
+
 
     public static void main(String[] args) {
         String serverIP = JOptionPane.showInputDialog("Enter server IP:");

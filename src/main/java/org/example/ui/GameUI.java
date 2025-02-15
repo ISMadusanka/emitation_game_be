@@ -125,4 +125,25 @@ public class GameUI extends JFrame {
     public void showMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
+
+    public void showGameOver(String message) {
+        // Clear the current task panel
+        if (currentTaskPanel != null) {
+            mainPanel.remove(currentTaskPanel);
+            currentTaskPanel = null;
+        }
+
+        // Display the game over message
+        JLabel gameOverLabel = new JLabel(message, SwingConstants.CENTER);
+        gameOverLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        mainPanel.add(gameOverLabel, BorderLayout.CENTER);
+
+        // Disable further interactions
+        for (Component comp : mainPanel.getComponents()) {
+            comp.setEnabled(false);
+        }
+
+        revalidate();
+        repaint();
+    }
 }

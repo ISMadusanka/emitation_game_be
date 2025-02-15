@@ -148,7 +148,22 @@ public class GameServer {
         players.sort((p1, p2) -> Integer.compare(p2.getScore(), p1.getScore()));
         System.out.println("Final Scores:");
         players.forEach(p -> System.out.println("Player " + p.getIdd() + ": " + p.getScore()));
-        System.out.println("Winner is Player " + players.get(0).getIdd());
+
+        // Notify all players of the winner
+        int winningScore = players.get(0).getScore();
+        for (PlayerHandler player : players) {
+            String resultMessage;
+            if (player.getScore() == winningScore) {
+                resultMessage = "You won!";
+            } else {
+                resultMessage = "You lost. The winner is Player " + players.get(0).getIdd();
+            }
+            try {
+                player.sendTask(new Task(TaskType.GAME_OVER, resultMessage, player.getRole()));
+            } catch (IOException e) {
+                System.out.println("Failed to send game over message to Player " + player.getIdd());
+            }
+        }
     }
 
     public static void main(String[] args) {
