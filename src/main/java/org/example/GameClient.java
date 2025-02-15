@@ -49,6 +49,7 @@ public class GameClient {
 
                 case ANSWER_QUESTION:
                     String q = (String) task.getData();
+                    System.out.println("You are: "+task.getRole());
                     System.out.print("Answer the question '" + q + "': ");
                     String answer = new Scanner(System.in).nextLine();
                     output.writeObject(new Response(ResponseType.ANSWER, answer));

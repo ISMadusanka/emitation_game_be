@@ -95,7 +95,7 @@ public class GameServer {
     }
 
     private String getQuestionFromJudge(PlayerHandler judge) throws InterruptedException, IOException {
-        judge.sendTask(new Task(TaskType.SUBMIT_QUESTION, null));
+        judge.sendTask(new Task(TaskType.SUBMIT_QUESTION, null,judge.getRole()));
         Pair<PlayerHandler, Response> responsePair = queue.take();
         return (String) responsePair.getValue().getData();
     }
@@ -106,7 +106,7 @@ public class GameServer {
                 .filter(p -> p.getRole() != Role.JUDGE)
                 .forEach(p -> {
                     try {
-                        p.sendTask(new Task(TaskType.ANSWER_QUESTION, question));
+                        p.sendTask(new Task(TaskType.ANSWER_QUESTION, question,p.getRole()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -130,7 +130,7 @@ public class GameServer {
             int queenIndex = shuffledAnswers.indexOf(answers.get(queen));
 
             for (int questionNum = 1; questionNum <= 3; questionNum++) {
-                judge.sendTask(new Task(TaskType.SELECT_ANSWER, shuffledAnswers));
+                judge.sendTask(new Task(TaskType.SELECT_ANSWER, shuffledAnswers,judge.getRole()));
                 Pair<PlayerHandler, Response> responsePair = queue.take();
                 int selectedIndex = (Integer) responsePair.getValue().getData();
 
