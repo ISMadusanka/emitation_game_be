@@ -58,7 +58,7 @@ public class GameServer {
         }
     }
     private void startGame() {
-        for (round = 0; round < 4; round++) {
+        for (round = 0; round < 6; round++) {
             assignRoles();
             conductJudgeTurn();
             currentJudgeIndex = (currentJudgeIndex + 1) % players.size();
