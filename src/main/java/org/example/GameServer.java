@@ -95,7 +95,7 @@ public class GameServer {
     }
 
     private String getQuestionFromJudge(PlayerHandler judge) throws InterruptedException, IOException {
-        judge.sendTask(new Task(TaskType.SUBMIT_QUESTION, null));
+        judge.sendTask(new Task(TaskType.SUBMIT_QUESTION, null,judge.getRole()));
         Pair<PlayerHandler, Response> responsePair = queue.take();
         return (String) responsePair.getValue().getData();
     }
@@ -106,7 +106,7 @@ public class GameServer {
                 .filter(p -> p.getRole() != Role.JUDGE)
                 .forEach(p -> {
                     try {
-                        p.sendTask(new Task(TaskType.ANSWER_QUESTION, question));
+                        p.sendTask(new Task(TaskType.ANSWER_QUESTION, question,p.getRole()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -130,7 +130,7 @@ public class GameServer {
             int queenIndex = shuffledAnswers.indexOf(answers.get(queen));
 
             for (int questionNum = 1; questionNum <= 3; questionNum++) {
-                judge.sendTask(new Task(TaskType.SELECT_ANSWER, shuffledAnswers));
+                judge.sendTask(new Task(TaskType.SELECT_ANSWER, shuffledAnswers,judge.getRole()));
                 Pair<PlayerHandler, Response> responsePair = queue.take();
                 int selectedIndex = (Integer) responsePair.getValue().getData();
 
@@ -148,7 +148,22 @@ public class GameServer {
         players.sort((p1, p2) -> Integer.compare(p2.getScore(), p1.getScore()));
         System.out.println("Final Scores:");
         players.forEach(p -> System.out.println("Player " + p.getIdd() + ": " + p.getScore()));
-        System.out.println("Winner is Player " + players.get(0).getIdd());
+
+        // Notify all players of the winner
+        int winningScore = players.get(0).getScore();
+        for (PlayerHandler player : players) {
+            String resultMessage;
+            if (player.getScore() == winningScore) {
+                resultMessage = "You won!";
+            } else {
+                resultMessage = "You lost. The winner is Player " + players.get(0).getIdd();
+            }
+            try {
+                player.sendTask(new Task(TaskType.GAME_OVER, resultMessage, player.getRole()));
+            } catch (IOException e) {
+                System.out.println("Failed to send game over message to Player " + player.getIdd());
+            }
+        }
     }
 
     public static void main(String[] args) {
