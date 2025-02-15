@@ -12,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class GameServer {
     private static final int PORT = 12345;
     private static final int MAX_PLAYERS = 3;
+    private static final int MAX_ROUNDS = 6;
     public static BlockingQueue<Pair<PlayerHandler, Response>> queue = new LinkedBlockingQueue<>();
     private final List<PlayerHandler> players = new ArrayList<>();
     private int currentJudgeIndex = 0;
@@ -58,7 +59,7 @@ public class GameServer {
         }
     }
     private void startGame() {
-        for (round = 0; round < 6; round++) {
+        for (round = 0; round < MAX_ROUNDS; round++) {
             assignRoles();
             conductJudgeTurn();
             currentJudgeIndex = (currentJudgeIndex + 1) % players.size();

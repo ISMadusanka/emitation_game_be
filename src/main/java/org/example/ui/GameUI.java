@@ -11,18 +11,24 @@ import java.util.List;
 
 public class GameUI extends JFrame {
     private final GameClient client;
-    private JLabel scoreLabel = new JLabel("Score: 0");
-    private JLabel roleLabel = new JLabel("Role: ");
+    private JLabel scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+    private JLabel roleLabel = new JLabel("Role: ", SwingConstants.CENTER);
     private JPanel mainPanel = new JPanel(new BorderLayout());
     private JPanel currentTaskPanel;
 
     public GameUI(GameClient client) {
         this.client = client;
         setTitle("Game Client");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setResizable(false);
 
-        JPanel infoPanel = new JPanel(new GridLayout(1, 2));
+        JPanel infoPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        roleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
         infoPanel.add(scoreLabel);
         infoPanel.add(roleLabel);
 
@@ -58,7 +64,12 @@ public class GameUI extends JFrame {
     }
 
     private JPanel createQuestionPanel() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0;
+
         JTextField questionField = new JTextField(20);
         JButton submit = new JButton("Submit Question");
 
@@ -70,14 +81,21 @@ public class GameUI extends JFrame {
             repaint();
         });
 
-        panel.add(new JLabel("Enter your question:"));
-        panel.add(questionField);
-        panel.add(submit);
+        panel.add(new JLabel("Enter your question:"), gbc);
+        gbc.gridy++;
+        panel.add(questionField, gbc);
+        gbc.gridy++;
+        panel.add(submit, gbc);
         return panel;
     }
 
     private JPanel createAnswerPanel(String question) {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0;
+
         JTextField answerField = new JTextField(20);
         JButton submit = new JButton("Submit Answer");
 
@@ -89,18 +107,21 @@ public class GameUI extends JFrame {
             repaint();
         });
 
-        panel.add(new JLabel("Question: " + question));
-        panel.add(answerField);
-        panel.add(submit);
+        panel.add(new JLabel("Question: " + question), gbc);
+        gbc.gridy++;
+        panel.add(answerField, gbc);
+        gbc.gridy++;
+        panel.add(submit, gbc);
         return panel;
     }
 
     private JPanel createSelectionPanel(List<String> answers) {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         ButtonGroup group = new ButtonGroup();
 
         for (int i = 0; i < answers.size(); i++) {
-            JRadioButton rb = new JRadioButton((i+1) + ") " + answers.get(i));
+            JRadioButton rb = new JRadioButton((i + 1) + ") " + answers.get(i));
             rb.setActionCommand(String.valueOf(i));
             group.add(rb);
             panel.add(rb);
@@ -127,18 +148,15 @@ public class GameUI extends JFrame {
     }
 
     public void showGameOver(String message) {
-        // Clear the current task panel
         if (currentTaskPanel != null) {
             mainPanel.remove(currentTaskPanel);
             currentTaskPanel = null;
         }
 
-        // Display the game over message
         JLabel gameOverLabel = new JLabel(message, SwingConstants.CENTER);
         gameOverLabel.setFont(new Font("Serif", Font.BOLD, 24));
         mainPanel.add(gameOverLabel, BorderLayout.CENTER);
 
-        // Disable further interactions
         for (Component comp : mainPanel.getComponents()) {
             comp.setEnabled(false);
         }
