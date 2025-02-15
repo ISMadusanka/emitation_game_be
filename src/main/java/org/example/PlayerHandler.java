@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.enums.Role;
+import org.example.enums.TaskType;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,7 +47,14 @@ public class PlayerHandler extends Thread {
 
     public int getIdd() { return id; }
     public int getScore() { return score; }
-    public void addScore(int points) { score += points; }
+    public void addScore(int points) {
+        score += points;
+        try {
+            sendTask(new Task(TaskType.UPDATE_SCORE, score, this.role));
+        } catch (IOException e) {
+            System.out.println("Error sending score update to player " + id);
+        }
+    }
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
 
